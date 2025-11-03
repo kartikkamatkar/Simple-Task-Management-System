@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Register - NexusFlow</title>
+    <link rel="stylesheet" href="color.css" />
+</head>
+<body class="auth-page">
+<div class="auth-container">
+    <div class="auth-card">
+        <form  method="POST" action="/register"th:object="$(registerRequest)">
+        <img src="image.png" alt="logo" style="width:56px;margin-bottom:16px" />
+        <h2>Create an account</h2>
+        <input id="regName" placeholder="Full name" />
+        <input id="regEmail" placeholder="Email" />
+        <input id="regPassword" type="password" placeholder="Password" />
+        <button id="registerBtn" class="btn btn-primary">Register</button>
+        <p class="muted">Already have an account? <a href="Login.html">Login</a></p>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('registerBtn').addEventListener('click', () => {
+      // TODO: call backend API POST /api/auth/register
+      window.location.href = 'Login.html';
+    });
+</script>
+</body>
+</html>

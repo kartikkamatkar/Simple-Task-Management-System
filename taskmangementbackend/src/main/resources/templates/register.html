@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Combined Register CSS */
+        .auth-wrapper {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, rgba(3,126,252,0.15), rgba(6,21,55,0.9));
+            font-family: "Poppins", sans-serif;
+        }
+
+        .auth-card {
+            width: 380px;
+            background: #fff;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .auth-card .brand {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .auth-card .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #1fb7ff, #0b63d4);
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-family: "Orbitron", sans-serif;
+            font-weight: 700;
+            margin: 0 auto 10px;
+        }
+
+        .auth-card h2 {
+            margin: 0;
+            color: #07203a;
+            text-align: center;
+            font-size: 1.25rem;
+        }
+        .auth-card p.sub {
+            margin: 0 0 18px 0;
+            color: #667;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .form-row {
+            margin-bottom: 12px;
+        }
+        .form-row label {
+            display: block;
+            font-size: 0.8rem;
+            color: #4a5b68;
+            margin-bottom: 6px;
+        }
+        .form-row input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #e6e9ee;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color .12s;
+        }
+        .form-row input:focus {
+            border-color: #0b63d4;
+        }
+
+        .field-error {
+            margin-top: 5px;
+            color: #d33;
+            font-size: 0.8rem;
+        }
+
+        .btn-auth {
+            width: 100%;
+            background: linear-gradient(90deg, #1fb7ff, #0b63d4);
+            border: none;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(31, 183, 255, 0.3);
+        }
+
+        .auth-actions {
+            text-align: center;
+            margin-top: 14px;
+        }
+        .auth-actions .link {
+            color: #0b63d4;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .auth-actions .link:hover {
+            color: #1fb7ff;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #d33;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            text-align: center;
+            padding: 8px;
+            background: rgba(211, 51, 51, 0.1);
+            border-radius: 6px;
+            border: 1px solid rgba(211, 51, 51, 0.2);
+        }
+
+        .password-strength {
+            margin-top: 5px;
+            font-size: 0.8rem;
+        }
+
+        .strength-weak { color: #d33; }
+        .strength-medium { color: #f90; }
+        .strength-strong { color: #3c3; }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .auth-card {
+                width: 90%;
+                margin: 0 20px;
+                padding: 20px;
+            }
+        }
+
+        /* Loading animation */
+        .btn-auth.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .btn-auth.loading::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="brand">
+            <div class="logo">NF</div>
+            <h2>Create your account</h2>
+            <p class="sub">Join NexusFlow today</p>
+        </div>
+
+        <form th:action="@{/register}" method="post" id="registerForm">
+            <div class="form-row">
+                <label>Username</label>
+                <input type="text" name="login" required placeholder="Choose a username" />
+            </div>
+            <div class="form-row">
+                <label>Email</label>
+                <input type="email" name="email" required placeholder="Enter your email" />
+            </div>
+            <div class="form-row">
+                <label>Password</label>
+                <input type="password" name="password" id="password" required placeholder="Create a password" />
+                <div class="password-strength" id="passwordStrength"></div>
+            </div>
+            <div class="form-row">
+                <label>Confirm Password</label>
+                <input type="password" name="confirmPassword" id="confirmPassword" required placeholder="Confirm your password" />
+            </div>
+
+            <!-- Show server error -->
+            <div th:if="${error}" class="error-message" th:text="${error}"></div>
+
+            <button class="btn-auth" type="submit" id="submitBtn">Sign Up</button>
+
+            <div class="auth-actions">
+                <span>Already have an account?</span>
+                <a class="link" th:href="@{/login}">Sign In</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Combined Register JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('registerForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordStrength = document.getElementById('passwordStrength');
+
+        function showError(input, msg) {
+            let err = input.parentElement.querySelector('.field-error');
+            if (!err) {
+                err = document.createElement('div');
+                err.className = 'field-error';
+                input.parentElement.appendChild(err);
+            }
+            err.textContent = msg;
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.field-error').forEach(e => e.remove());
+        }
+
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/\d/)) strength++;
+            if (password.match(/[^a-zA-Z\d]/)) strength++;
+
+            return strength;
+        }
+
+        function updatePasswordStrength() {
+            const password = passwordInput.value;
+            const strength = checkPasswordStrength(password);
+
+            if (password.length === 0) {
+                passwordStrength.textContent = '';
+                passwordStrength.className = 'password-strength';
+                return;
+            }
+
+            if (strength <= 2) {
+                passwordStrength.textContent = 'Weak password';
+                passwordStrength.className = 'password-strength strength-weak';
+            } else if (strength === 3) {
+                passwordStrength.textContent = 'Medium password';
+                passwordStrength.className = 'password-strength strength-medium';
+            } else {
+                passwordStrength.textContent = 'Strong password';
+                passwordStrength.className = 'password-strength strength-strong';
+            }
+        }
+
+        function showLoading() {
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+        }
+
+        function hideLoading() {
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
+        }
+
+        passwordInput.addEventListener('input', updatePasswordStrength);
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            clearErrors();
+
+            const login = form.login.value.trim();
+            const email = form.email.value.trim();
+            const password = form.password.value.trim();
+            const confirm = form.confirmPassword.value.trim();
+
+            let valid = true;
+
+            if (login.length < 3) {
+                showError(form.login, "Username must be at least 3 characters");
+                valid = false;
+            }
+
+            if (!/\S+@\S+\.\S+/.test(email)) {
+                showError(form.email, "Enter a valid email address");
+                valid = false;
+            }
+
+            if (password.length < 6) {
+                showError(form.password, "Password must be at least 6 characters");
+                valid = false;
+            }
+
+            if (password !== confirm) {
+                showError(form.confirmPassword, "Passwords do not match");
+                valid = false;
+            }
+
+            if (!valid) return;
+
+            // Show loading state
+            showLoading();
+
+            // For demo purposes - you can remove this timeout in production
+            setTimeout(() => {
+                // Submit the form
+                form.submit();
+            }, 1000);
+        });
+
+        // Add input event listeners for real-time validation
+        form.login.addEventListener('input', function() {
+            clearErrors();
+        });
+
+        form.email.addEventListener('input', function() {
+            clearErrors();
+        });
+
+        form.password.addEventListener('input', function() {
+            clearErrors();
+        });
+
+        form.confirmPassword.addEventListener('input', function() {
+            clearErrors();
+        });
+
+        // Add enter key support
+        form.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                form.dispatchEvent(new Event('submit'));
+            }
+        });
+    });
+</script>
+</body>
+</html>

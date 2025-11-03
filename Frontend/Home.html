@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NexusFlow - Dashboard</title>
+  <link rel="stylesheet" href="color.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="animated-bg">
+    <div class="bg-element bg-1"></div>
+    <div class="bg-element bg-2"></div>
+    <div class="bg-element bg-3"></div>
+  </div>
+
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="image.png" alt="logo" class="logo-icon" />
+        <div class="logo-text">NexusFlow</div>
+      </div>
+
+      <ul class="sidebar-nav">
+        <li class="nav-item"><a href="#" class="nav-link active"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-tasks"></i><span>My Tasks</span><span class="nav-badge">12</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i><span>Calendar</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-chart-pie"></i><span>Analytics</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-users"></i><span>Team</span></a></li>
+        <li class="nav-item"><a th:href="@{/login}" class="nav-link"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+      </ul>
+
+      <!-- ✅ Updated User Section -->
+      <div class="user-profile">
+        <div class="user-avatar" th:text="${#strings.substring(user.login, 0, 2).toUpperCase()}">JD</div>
+        <div class="user-info">
+          <h4 th:text="${user.login}">Kartike</h4>
+          <p th:text="${user.email}">Product Manager</p>
+          <span class="redirect-link" style="font-size: 0.9rem;">
+            <a th:href="@{/login}" style="color: #ff6666; text-decoration: none;">Logout</a>
+          </span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="header">
+        <h1 class="page-title">Task Dashboard</h1>
+        <div class="header-actions">
+          <button class="btn btn-secondary"><i class="fas fa-filter"></i> Filter</button>
+          <button class="btn btn-primary" id="newTaskBtn"><i class="fas fa-plus"></i> New Task</button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card fade-in">
+          <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+          <div class="stat-content"><h3 id="total-tasks">0</h3><p>Total Tasks</p></div>
+        </div>
+        <div class="stat-card fade-in" style="animation-delay: 0.1s;">
+          <div class="stat-icon"><i class="fas fa-spinner"></i></div>
+          <div class="stat-content"><h3 id="inprogress-tasks">0</h3><p>In Progress</p></div>
+        </div>
+        <div class="stat-card fade-in" style="animation-delay: 0.2s;">
+          <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+          <div class="stat-content"><h3 id="completed-tasks">0</h3><p>Completed</p></div>
+        </div>
+        <div class="stat-card fade-in" style="animation-delay: 0.3s;">
+          <div class="stat-icon"><i class="fas fa-clock"></i></div>
+          <div class="stat-content"><h3 id="overdue-tasks">0</h3><p>Overdue</p></div>
+        </div>
+      </div>
+
+      <div class="task-input-panel fade-in">
+        <div class="panel-header"><i class="fas fa-plus-circle"></i><h3>Create New Task</h3></div>
+        <div class="input-grid">
+          <div class="input-field">
+            <div class="input-label">Task Title</div>
+            <input type="text" id="taskTitle" placeholder="Enter task title">
+          </div>
+          <div class="input-field">
+            <div class="input-label">Due Date</div>
+            <input type="date" id="taskDueDate">
+          </div>
+          <div class="input-field">
+            <div class="input-label">Priority</div>
+            <select id="taskPriority">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="addTaskBtn"><i class="fas fa-plus"></i> Add Task</button>
+        </div>
+        <div class="input-field" style="grid-column:1 / -1; margin-top:16px;">
+          <div class="input-label">Description</div>
+          <textarea id="taskDescription" placeholder="Enter task description"></textarea>
+        </div>
+      </div>
+
+      <div class="task-board">
+        <div class="task-column fade-in">
+          <div class="column-header">
+            <div class="column-title"><i class="fas fa-list-ul"></i><span>To Do</span></div>
+            <div class="column-badge" id="todo-count">0</div>
+          </div>
+          <div class="task-list" id="todo-list"></div>
+        </div>
+
+        <div class="task-column fade-in">
+          <div class="column-header">
+            <div class="column-title"><i class="fas fa-spinner"></i><span>In Progress</span></div>
+            <div class="column-badge" id="progress-count">0</div>
+          </div>
+          <div class="task-list" id="progress-list"></div>
+        </div>
+
+        <div class="task-column fade-in">
+          <div class="column-header">
+            <div class="column-title"><i class="fas fa-check-circle"></i><span>Completed</span></div>
+            <div class="column-badge" id="completed-count">0</div>
+          </div>
+          <div class="task-list" id="completed-list"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="logic.js"></script>
+</body>
+</html>
