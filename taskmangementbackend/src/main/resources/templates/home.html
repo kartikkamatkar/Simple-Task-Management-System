@@ -1260,7 +1260,6 @@
             </div>
             <span class="logo-text">NexusFlow</span>
         </div>
-
         <div class="nav-menu">
             <a href="#features" class="nav-link">Features</a>
             <a href="#add-task" class="nav-link">Add Task</a>
@@ -1269,18 +1268,15 @@
         </div>
         <div class="nav-auth">
             <div th:if="${userLogin}">
-                <!-- User is logged in -->
                 <form th:action="@{/logout}" method="post" style="display: inline;">
                     <button class="btn btn-outline" type="submit" style="margin-left: 10px;">Logout</button>
                 </form>
             </div>
             <div th:unless="${userLogin}">
-                <!-- User is not logged in -->
                 <button class="btn btn-outline" onclick="window.location.href='/login'">Login</button>
                 <button class="btn btn-primary" onclick="window.location.href='/register'">Sign Up</button>
             </div>
         </div>
-
         <div class="mobile-toggle">
             <i class="fas fa-bars"></i>
         </div>
@@ -1333,15 +1329,15 @@
                     <div class="preview-main">
                         <div class="preview-task completed">
                             <i class="fas fa-check-circle"></i>
-                            <span>Complete Math Assignment</span>
+                            <span>Complete Project</span>
                         </div>
                         <div class="preview-task progress">
                             <i class="fas fa-spinner"></i>
-                            <span>Write Research Paper</span>
+                            <span>Create Research Paper</span>
                         </div>
                         <div class="preview-task pending">
                             <i class="far fa-circle"></i>
-                            <span>Study for Exam</span>
+                            <span>Study for ESE</span>
                         </div>
                     </div>
                 </div>

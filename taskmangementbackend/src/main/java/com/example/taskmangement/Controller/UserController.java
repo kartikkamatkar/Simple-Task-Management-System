@@ -22,32 +22,24 @@ public class UserController {
     @Autowired
     private TaskService taskService;
 
-    // Home dashboard - loads only when user session exists
     @GetMapping({"/", "/home"})
     public String homePage(HttpSession session, Model model) {
-
         String userLogin = (String) session.getAttribute("userLogin");
-
-        // If user is logged in, load tasks and stats
         if (userLogin != null) {
             model.addAttribute("userLogin", userLogin);
-
             List<TaskModel> userTasks = taskService.getTasksByUser(userLogin);
             model.addAttribute("tasks", userTasks);
-
-            // Calculate task status counts for dashboard
             long totalTasks = userTasks.size();
             long completedTasks = userTasks.stream().filter(TaskModel::isCompleted).count();
             long inProgressTasks = userTasks.stream().filter(task -> "progress".equals(task.getStatus())).count();
             long todoTasks = userTasks.stream().filter(task -> "todo".equals(task.getStatus())).count();
-
             model.addAttribute("totalTasks", totalTasks);
             model.addAttribute("completedTasks", completedTasks);
             model.addAttribute("inProgressTasks", inProgressTasks);
             model.addAttribute("todoTasks", todoTasks);
         }
 
-        return "home"; // load home.html
+        return "home";
     }
 
     // Show login screen
