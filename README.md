@@ -39,7 +39,7 @@ Server URL: http://localhost:8080
 
 3️⃣ Run Frontend
  Just open the HTML files from the Frontend folder
- or use Spring templates (login, register, home).
+ or use Spring templates (login, register, home)..
 
 📡 API Endpoints
  GET /tasks — Fetch all tasks
